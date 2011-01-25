@@ -5,7 +5,7 @@ import java.util.LinkedList;
 /**
  * Verify the solution using dynamic programming to solve for LCSubstring.
  */
-public class Verifier {
+public class Verifier implements IAlgorithm {
     private LinkedList<SubString> generateResult(String s1, String s2) {
         int[][] L = new int[s1.length()][s2.length()];
         int z = 0;
