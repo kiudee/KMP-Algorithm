@@ -6,10 +6,10 @@ import java.util.LinkedList;
  * Verify the solution using dynamic programming to solve for LCSubstring.
  */
 public class Verifier {
-    public LinkedList<String> run(String s1, String s2) {
+    private LinkedList<SubString> generateResult(String s1, String s2) {
         int[][] L = new int[s1.length()][s2.length()];
         int z = 0;
-        LinkedList<String> list = new LinkedList<String>();
+        LinkedList<SubString> list = new LinkedList<SubString>();
         for (int i = 0; i < s1.length(); i++) {
             for (int j = 0; j < s2.length(); j++) {
                 if (s1.charAt(i) == s2.charAt(j)) {
@@ -21,8 +21,10 @@ public class Verifier {
                         z = L[i][j];
                         list.clear();
                     }
-                    if (L[i][j] == z)
-                        list.add(s1.substring(i - z + 1, i + 1));
+                    if (L[i][j] == z) {
+                        SubString ss = new SubString(s1.substring(i - z + 1, i + 1), i, j);
+                        list.add(ss);
+                    }
                 }
             }
         }
@@ -30,9 +32,19 @@ public class Verifier {
         return list;
     }
 
+    public String run(String T1, String T2) {
+        LinkedList<SubString> list = generateResult(T1, T2);
+        if (list.size() == 0)
+            return "No Common Substring";
+        String output = "" + list.peek().getSubstring().length() + "\n";
+        for (SubString ss : list) {
+            output += ss.getShiftT1() + " " + ss.getShiftT2() + "\n";
+        }
+        return output;
+    }
+
     public static void main(String[] args) {
         Verifier v = new Verifier();
-        LinkedList<String> list = v.run("ababcabab", "ababdabab");
-        System.out.println(list.toString());
+        System.out.print(v.run("abcdabc", "abceabc"));
     }
 }
