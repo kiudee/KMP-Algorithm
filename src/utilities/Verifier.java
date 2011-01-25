@@ -13,7 +13,7 @@ public class Verifier {
         for (int i = 0; i < s1.length(); i++) {
             for (int j = 0; j < s2.length(); j++) {
                 if (s1.charAt(i) == s2.charAt(j)) {
-                    if (i == 1 || j == 1)
+                    if (i == 0 || j == 0)
                         L[i][j] = 1;
                     else
                         L[i][j] = L[i - 1][j - 1] + 1;
@@ -22,7 +22,7 @@ public class Verifier {
                         list.clear();
                     }
                     if (L[i][j] == z)
-                        list.add(s1.substring(i - z + 1, i));
+                        list.add(s1.substring(i - z + 1, i + 1));
                 }
             }
         }
