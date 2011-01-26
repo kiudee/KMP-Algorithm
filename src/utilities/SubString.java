@@ -11,6 +11,10 @@ public class SubString {
         this.shiftT2 = shiftT2;
     }
 
+    public SubString(String substring, int shift) {
+        this(substring, shift, shift);
+    }
+
     public String getSubstring() {
         return substring;
     }
