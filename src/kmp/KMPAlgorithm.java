@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class KMPAlgorithm {
 
-    public void kmpMatcher(LinkedList<SubString> list, String P, String T) {
+    public void kmpMatcher(LinkedList<SubString> list, String P, String T, int currentShift) {
         int m = P.length();
         int n = T.length();
         int[] func = computePrefixFunction(P);
@@ -17,7 +17,7 @@ public class KMPAlgorithm {
             if (P.charAt(q) == T.charAt(i))
                 q++;
             if (q == m) {
-                list.add(new SubString(P, i - m));
+                list.add(new SubString(P, i - m, currentShift));
                 q = func[q - 1];
             }
         }
@@ -37,14 +37,5 @@ public class KMPAlgorithm {
         }
         return func;
 
-    }
-
-    public static void main(String[] args) {
-        KMPAlgorithm algo = new KMPAlgorithm();
-        LinkedList<SubString> result = new LinkedList<SubString>();
-        algo.kmpMatcher(result, "ababa", "abbbabbababaa");
-        for (SubString ss : result) {
-            System.out.println(ss.getShiftT1());
-        }
     }
 }
