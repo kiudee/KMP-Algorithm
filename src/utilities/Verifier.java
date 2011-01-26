@@ -22,7 +22,7 @@ public class Verifier implements IAlgorithm {
                         list.clear();
                     }
                     if (L[i][j] == z) {
-                        SubString ss = new SubString(s1.substring(i - z + 1, i + 1), i, j);
+                        SubString ss = new SubString(s1.substring(i - z + 1, i + 1), i - z + 1, j - z + 1);
                         list.add(ss);
                     }
                 }

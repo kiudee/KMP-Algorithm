@@ -17,7 +17,7 @@ public class KMPAlgorithm {
             if (P.charAt(q) == T.charAt(i))
                 q++;
             if (q == m) {
-                list.add(new SubString(P, i - m, currentShift));
+                list.add(new SubString(P, i - m + 1, currentShift));
                 q = func[q - 1];
             }
         }
@@ -31,11 +31,16 @@ public class KMPAlgorithm {
 
         for (int q = 1; q < m; q++) {
             while (k > 0 && P.charAt(k) != P.charAt(q))
-                k = func[k];
+                k = func[k - 1];
             if (P.charAt(k) == P.charAt(q)) k++;
             func[q] = k;
         }
         return func;
 
+    }
+
+    public static void main(String[] args) {
+        KMPAlgorithm kmp = new KMPAlgorithm();
+        kmp.computePrefixFunction("ababababca");
     }
 }

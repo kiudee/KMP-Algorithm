@@ -7,8 +7,8 @@ public class Runner {
         /* FileLoader fl = new FileLoader();
      String T1 = fl.load(args[0]);
      String T2 = fl.load(args[1]);*/
-        String T1 = "ababaabbba";
-        String T2 = "abbbabbabababbbababa";
+        String T1 = "abab";
+        String T2 = "baba";
 
         // Generate the solution using our algorithm
         // Input the algorithm here:
@@ -19,6 +19,7 @@ public class Runner {
         // Generate the verification solution:
         IAlgorithm verificator = new Verifier();
         String correct = verificator.run(T1, T2);
+        System.out.println(correct);
         if (!result.equals(correct)) {
             System.out.println("Error: Result and Solution do not match!");
         }
