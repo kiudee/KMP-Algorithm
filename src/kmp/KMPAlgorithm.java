@@ -2,13 +2,11 @@ package kmp;
 
 import utilities.SubString;
 
-import java.util.Collection;
 import java.util.LinkedList;
 
 public class KMPAlgorithm {
 
-    public Collection<SubString> kmpMatcher(String P, String T) {
-        LinkedList<SubString> result = new LinkedList<SubString>();
+    public void kmpMatcher(LinkedList<SubString> list, String P, String T) {
         int m = P.length();
         int n = T.length();
         int[] func = computePrefixFunction(P);
@@ -19,11 +17,10 @@ public class KMPAlgorithm {
             if (P.charAt(q) == T.charAt(i))
                 q++;
             if (q == m) {
-                result.add(new SubString(P, i - m));
+                list.add(new SubString(P, i - m));
                 q = func[q - 1];
             }
         }
-        return result;
     }
 
     private int[] computePrefixFunction(String P) {
@@ -44,7 +41,8 @@ public class KMPAlgorithm {
 
     public static void main(String[] args) {
         KMPAlgorithm algo = new KMPAlgorithm();
-        Collection<SubString> result = algo.kmpMatcher("ababa", "abbabaababababb");
+        LinkedList<SubString> result = new LinkedList<SubString>();
+        algo.kmpMatcher(result, "ababa", "abbbabbababaa");
         for (SubString ss : result) {
             System.out.println(ss.getShiftT1());
         }
