@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 public class KMPLCSAlgorithm implements IAlgorithm {
     public String run(String T1, String T2) {
-        KMPAlgorithm kmp = new KMPAlgorithm();
+        KMPAlgorithm kmp;
         String minString, maxString;
         if (T1.length() < T2.length()) {
             minString = T1;
@@ -16,12 +16,13 @@ public class KMPLCSAlgorithm implements IAlgorithm {
             minString = T2;
             maxString = T1;
         }
+        kmp = new KMPAlgorithm(maxString, minString);
 
         LinkedList<SubString> list = new LinkedList<SubString>();
         int length;
         for (length = minString.length(); length > 0; length--) {
             for (int i = 0; i <= (minString.length() - length); i++) {
-                kmp.kmpMatcher(list, minString.substring(i, i + length), maxString, i);
+                kmp.kmpMatcher(list, i, length);
             }
             if (!list.isEmpty()) {
                 break;

@@ -7,8 +7,8 @@ public class Runner {
         /* FileLoader fl = new FileLoader();
      String T1 = fl.load(args[0]);
      String T2 = fl.load(args[1]);*/
-        String T1 = "abab";
-        String T2 = "baba";
+        String T1 = "bbbabbabba";
+        String T2 = "baabababab";
 
         // Generate the solution using our algorithm
         // Input the algorithm here:
