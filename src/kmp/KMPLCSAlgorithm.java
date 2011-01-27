@@ -21,7 +21,7 @@ public class KMPLCSAlgorithm implements IAlgorithm {
         int length;
         for (length = minString.length(); length > 0; length--) {
             for (int i = 0; i <= (minString.length() - length); i++) {
-                kmp.kmpMatcher(list, minString.substring(i, i + length), maxString, i);
+                //kmp.kmpMatcher(list, minString.substring(i, i + length), maxString, i);
             }
             if (!list.isEmpty()) {
                 break;
