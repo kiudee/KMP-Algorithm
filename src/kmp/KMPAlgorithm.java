@@ -19,32 +19,40 @@ public class KMPAlgorithm {
     private KMPAlgorithm() {
     }
 
+    private int[] computePrefixFunction(int shift, int length) {
+        final int[] func = new int[length];
+        func[0] = 0;
+        int k = shift;
+
+        for (int q = shift + 1; q < length + shift; q++) {
+            while (k > shift && pattern[k] != pattern[q])
+                k = func[k - 1 - shift] + shift;
+            if (pattern[k] == pattern[q]) k++;
+            func[q - shift] = k - shift;
+        }
+        return func;
+    }
+
+    public void kmpMatcher(LinkedList<SubString> list, int shift, int length) {
+        int[] func = computePrefixFunction(shift, length);
+        int q = 0;
+        for (int i = 0; i < stringLength; i++) {
+            while (q > 0 && pattern[q + shift] != string[i])
+                q = func[q - 1];
+            if (pattern[q + shift] == string[i])
+                q++;
+            if (q == length) {
+                list.add(new SubString(new String(pattern, shift, length), i - length + 1, shift));
+                q = func[q - 1];
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         KMPAlgorithm kmp = new KMPAlgorithm("abbabaababababb", "ababa");
         LinkedList<SubString> list = new LinkedList<SubString>();
-        final int[] func1 = new int[4];
-        func1[0] = 0;
-        int k = 1;
-
-        for (int q1 = 1 + 1; q1 < 4 + 1; q1++) {
-            while (k > 1 && kmp.pattern[k] != kmp.pattern[q1])
-                k = func1[k - 1 - 1] + 1;
-            if (kmp.pattern[k] == kmp.pattern[q1]) k++;
-            func1[q1 - 1] = k - 1;
-        }
-        int[] func = func1;
-        int q = 0;
-        for (int i = 0; i < kmp.stringLength; i++) {
-            while (q > 0 && kmp.pattern[q + 1] != kmp.string[i])
-                q = func[q - 1];
-            if (kmp.pattern[q + 1] == kmp.string[i])
-                q++;
-            if (q == 4) {
-                list.add(new SubString(new String(kmp.pattern, 1, 4), i - 4 + 1, 1));
-                q = func[q - 1];
-            }
-        }
+        kmp.kmpMatcher(list, 1, 4);
         for (SubString ss : list) {
             System.out.println(ss.getShiftT1() + " " + ss.getShiftT2());
         }
