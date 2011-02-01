@@ -5,108 +5,61 @@
  * Created on 31. Januar 2011, 15:58
  */
 #include "KMPAlgorithm.h"
+#include "FileLoader.h"
 
-vector<char> KMPAlgorithm::toCharVector(string s) {
-    vector<char> result(s.length());
-    for (int i = 0; i < s.length(); i++) {
-        result[i] = s[i];
+vector<int> KMPAlgorithm::calculatePrefixFunction(vector<char> pattern, int shift, int length) {
+    vector<int> func(length);
+    func[0] = 0;
+    int k = shift;
+
+    for (int q = shift + 1; q < length + shift; q++) {
+        while (k > shift && pattern[k] != pattern[q])
+            k = func[k - 1 - shift] + shift;
+        if (pattern[k] == pattern[q]) k++;
+        func[q - shift] = k - shift;
     }
-
-    return result;
+    return func;
 }
 
-void KMPAlgorithm::run(string t1, string t2) {
-    vector<char> minString, maxString;
-    bool t1IsMin = false;
-    if (t1.length() < t2.length()) {
-        t1IsMin = true;
-        minString = toCharVector(t1);
-        maxString = toCharVector(t2);
-    } else {
-        maxString = toCharVector(t1);
-        minString = toCharVector(t2);
-    }
-
-    int length;
-    for (length = minString.size(); length > 0; length--) {
-        bool found = false;
-        for (int i = 0; i <= (minString.size() - length); i++) {
-            vector <int> func1(length);
-            func1[0] = 0;
-            int k = i;
-
-            for (int q1 = i + 1; q1 < length + i; q1++) {
-                while (k > i && minString[k] != minString[q1])
-                    k = func1[k - 1 - i] + i;
-                if (minString[k] == minString[q1]) k++;
-                func1[q1 - i] = k - i;
-            }
-            int q = 0;
-            for (int i1 = 0; i1 < maxString.size(); i1++) {
-                while (q > 0 && minString[q + i] != maxString[i1])
-                    q = func1[q - 1];
-                if (minString[q + i] == maxString[i1]) q++;
-                if (q == length) {
-                    if (!found) {
-                        cout << length;
-                        found = true;
-                    }
-                    if (t1IsMin) {
-                        cout << "\n" << i1 - length + 1 << " " << i;
-                    } else {
-                        cout << "\n" << i << " " << i1 - length + 1;
-                    }
-                    q = func1[q - 1];
-                }
-            }
-        }
-        if (found) return;
-    }
-}
-
-vector<SubString> KMPAlgorithm::debugrun(string t1, string t2) {
+vector<SubString> KMPAlgorithm::run(vector<char> t1, vector<char> t2) {
     vector<SubString> result;
-    vector<char> minString, maxString;
+    vector<char> *minString, *maxString;
     bool t1IsMin = false;
-    if (t1.length() < t2.length()) {
+    if (t1.size() < t2.size()) {
         t1IsMin = true;
-        minString = toCharVector(t1);
-        maxString = toCharVector(t2);
+        minString = &t1;
+        maxString = &t2;
     } else {
-        maxString = toCharVector(t1);
-        minString = toCharVector(t2);
+        maxString = &t1;
+        minString = &t2;
     }
 
     int length;
-    for (length = minString.size(); length > 0; length--) {
+    for (length = minString->size(); length > 0; length--) {
         bool found = false;
-        for (int i = 0; i <= (minString.size() - length); i++) {
-            vector <int> func1(length);
-            func1[0] = 0;
-            int k = i;
+        for (int shift = 0; shift <= (minString->size() - length); shift++) {
+            vector <int> prefix = calculatePrefixFunction(*minString, shift, length);
 
-            for (int q1 = i + 1; q1 < length + i; q1++) {
-                while (k > i && minString[k] != minString[q1])
-                    k = func1[k - 1 - i] + i;
-                if (minString[k] == minString[q1]) k++;
-                func1[q1 - i] = k - i;
-            }
             int q = 0;
-            for (int i1 = 0; i1 < maxString.size(); i1++) {
-                while (q > 0 && minString[q + i] != maxString[i1])
-                    q = func1[q - 1];
-                if (minString[q + i] == maxString[i1]) q++;
+            for (int i1 = 0; i1 < maxString->size(); i1++) {
+                while (q > 0 && (*minString)[q + shift] != (*maxString)[i1])
+                    q = prefix[q - 1];
+                if ((*minString)[q + shift] == (*maxString)[i1]) q++;
                 if (q == length) {
-                    SubString ss;
-                    if (t1IsMin) {
-                        ss.shift1 = i1 - length + 1;
-                        ss.shift2 = i;
+                    if (debug) {
+                        SubString ss;
+                        if (t1IsMin) {
+                            ss.shift1 = i1 - length + 1;
+                            ss.shift2 = shift;
+                        } else {
+                            ss.shift1 = shift;
+                            ss.shift2 = i1 - length + 1;
+                        }
+                        result.push_back(ss);
                     } else {
-                        ss.shift1 = i;
-                        ss.shift2 = i1 - length + 1;
+                        cout << endl << i1 - length +1 << " " << shift;
                     }
-                    result.push_back(ss);
-                    q = func1[q - 1];
+                    q = prefix[q - 1];
                     found = true;
                 }
             }
@@ -118,7 +71,7 @@ vector<SubString> KMPAlgorithm::debugrun(string t1, string t2) {
     }
 }
 
-vector<SubString> verify(string s1, string s2) {
+vector<SubString> verify(vector<char> s1, vector<char> s2) {
     int L[s1.size()][s2.size()];
     int z = 0;
     vector<SubString> list;
@@ -144,15 +97,18 @@ vector<SubString> verify(string s1, string s2) {
     }
 }
 
-void KMPAlgorithm::sort(vector<SubString>& v) {
-
-}
 
 int main(int argc, char** argv) {
-    string s = "bbbabbabba";
-    string t = "baabababab";
+    if (argc != 3){
+        cout<< "Error: 2 Arguments expected!";
+        exit(1);
+    }
+    FileLoader fileLoader;
+    vector<char> s = fileLoader.load(argv[1]);
+    vector<char> t = fileLoader.load(argv[2]);
+    
     KMPAlgorithm algo;
-    vector<SubString> result = algo.debugrun(s, t);
+    vector<SubString> result = algo.run(s, t);
     cout << algo.getMaxLength();
     for (int i = 0; i < result.size(); i++) {
         SubString ss = result[i];

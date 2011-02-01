@@ -7,23 +7,24 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdlib>
 using namespace std;
+
 struct SubString {
-        int shift1;
-        int shift2;
-    };
+    int shift1;
+    int shift2;
+};
+
 class KMPAlgorithm {
 public:
+    vector<SubString> run(vector<char> t1, vector<char> t2);
 
-    
-    void run(string t1, string t2);
-    vector<SubString> debugrun(string t1, string t2);
     int getMaxLength() const {
         return maxLength;
     }
 private:
-    vector<char> toCharVector(string s);
+    static const bool debug = true;
     int maxLength;
-    void sort (vector<SubString> &v);
+    vector<int> calculatePrefixFunction(vector<char> pattern, int shift, int length);
 };
 
