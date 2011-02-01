@@ -116,11 +116,11 @@ int main(int argc, char** argv) {
     }
     cout << endl;
 
-    vector<SubString> solution = verify(s, t);
-    for (int i = 0; i < solution.size(); i++) {
-        SubString ss = solution[i];
-        cout << endl << ss.shift1 << " " << ss.shift2;
-    }
+//    vector<SubString> solution = verify(s, t);
+//    for (int i = 0; i < solution.size(); i++) {
+//        SubString ss = solution[i];
+//        cout << endl << ss.shift1 << " " << ss.shift2;
+//    }
 
     return 0;
 }
