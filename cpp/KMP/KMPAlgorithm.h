@@ -19,6 +19,7 @@ typedef unsigned int uint;
 class KMPAlgorithm {
 public:
     list<SubString> run(char* t1, char* t2);
+    list<SubString> verify(char* t1, char* t2);
     uint s_length, t_length;
 
 private:

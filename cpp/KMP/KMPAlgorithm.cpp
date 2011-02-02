@@ -40,7 +40,7 @@ list<SubString> KMPAlgorithm::run(char* t1, char* t2) {
 
     list<SubString> currentShifts;
     uint currentLongestPrefix = 0;
-    for (uint shift = 0; shift < minLength - currentLongestPrefix; shift++) {
+    for (uint shift = 0; shift < minLength - currentLongestPrefix+1; shift++) {
         if (debug) cout << shift << endl;
         calculatePrefixFunction(minString, shift, minLength);
 
@@ -68,30 +68,37 @@ list<SubString> KMPAlgorithm::run(char* t1, char* t2) {
     return currentShifts;
 }
 
-vector<SubString> verify(vector<char> s1, vector<char> s2) {
-    int L[s1.size()][s2.size()];
+list<SubString> KMPAlgorithm::verify(char* t1, char* t2) {
+	int L[s_length][t_length];
+	list<SubString> currentShifts;
+
     int z = 0;
-    vector<SubString> list;
-    for (int i = 0; i < s1.size(); i++) {
-        for (int j = 0; j < s2.size(); j++) {
-            if (s1[i] == s2[j]) {
+    for (uint i = 0; i < s_length; i++) {
+        for (uint j = 0; j < t_length; j++) {
+            if (t1[i] == t2[j]) {
                 if (i == 0 || j == 0)
                     L[i][j] = 1;
                 else
                     L[i][j] = L[i - 1][j - 1] + 1;
                 if (L[i][j] > z) {
                     z = L[i][j];
-                    list.clear();
+                    currentShifts.clear();
                 }
                 if (L[i][j] == z) {
                     SubString ss;
                     ss.shift1 = i - z + 1;
                     ss.shift2 = j - z + 1;
-                    list.push_back(ss);
+
+                    currentShifts.push_back(ss);
                 }
+            } else {
+            	L[i][j]=0;
             }
         }
     }
+    cout << "ready";
+
+    return currentShifts;
 }
 
 int main(int argc, char** argv) {
@@ -107,6 +114,7 @@ int main(int argc, char** argv) {
 
 
     list <SubString> result= algo.run(s, t);
+    //list <SubString> result= algo.verify(s,t);
     while (!result.empty()){
         SubString arr = result.front();
         result.pop_front();
