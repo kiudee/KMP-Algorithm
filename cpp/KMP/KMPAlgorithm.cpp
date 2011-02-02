@@ -7,18 +7,16 @@
 #include "KMPAlgorithm.h"
 #include "FileLoader.h"
 
-vector<int> KMPAlgorithm::calculatePrefixFunction(vector<char> pattern, int shift, int length) {
-    vector<int> func(length);
-    func[0] = 0;
+void KMPAlgorithm::calculatePrefixFunction(vector<char> pattern, int shift, int length) {
+    prefixFunction[0] = 0;
     int k = shift;
 
     for (int q = shift + 1; q < length + shift; q++) {
         while (k > shift && pattern[k] != pattern[q])
-            k = func[k - 1 - shift] + shift;
+            k = prefixFunction[k - 1 - shift] + shift;
         if (pattern[k] == pattern[q]) k++;
-        func[q - shift] = k - shift;
+        prefixFunction[q - shift] = k - shift;
     }
-    return func;
 }
 
 vector<SubString> KMPAlgorithm::run(vector<char> t1, vector<char> t2) {
@@ -29,21 +27,23 @@ vector<SubString> KMPAlgorithm::run(vector<char> t1, vector<char> t2) {
         t1IsMin = true;
         minString = &t1;
         maxString = &t2;
+        prefixFunction = new int[t1.size()];
     } else {
         maxString = &t1;
         minString = &t2;
+        prefixFunction = new int[t2.size()];
     }
 
     int length;
     for (length = minString->size(); length > 0; length--) {
         bool found = false;
         for (int shift = 0; shift <= (minString->size() - length); shift++) {
-            vector <int> prefix = calculatePrefixFunction(*minString, shift, length);
+            calculatePrefixFunction(*minString, shift, length);
 
             int q = 0;
             for (int i1 = 0; i1 < maxString->size(); i1++) {
                 while (q > 0 && (*minString)[q + shift] != (*maxString)[i1])
-                    q = prefix[q - 1];
+                    q = prefixFunction[q - 1];
                 if ((*minString)[q + shift] == (*maxString)[i1]) q++;
                 if (q == length) {
                     if (debug) {
@@ -59,7 +59,7 @@ vector<SubString> KMPAlgorithm::run(vector<char> t1, vector<char> t2) {
                     } else {
                         cout << endl << i1 - length +1 << " " << shift;
                     }
-                    q = prefix[q - 1];
+                    q = prefixFunction[q - 1];
                     found = true;
                 }
             }

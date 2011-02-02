@@ -7,7 +7,7 @@ vector<char> FileLoader::load(char path[]){
         cerr << "unable to open file " << path << endl;
         exit(1);
     }
-    vector<char> result;
+    vector<char> result(6500);
     char ch;
     while (inFile.get(ch)) result.push_back(ch);
 

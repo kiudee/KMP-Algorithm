@@ -24,7 +24,8 @@ public:
     }
 private:
     static const bool debug = true;
+    int* prefixFunction;
     int maxLength;
-    vector<int> calculatePrefixFunction(vector<char> pattern, int shift, int length);
+    void calculatePrefixFunction(vector<char> pattern, int shift, int length);
 };
 
