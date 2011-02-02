@@ -4,22 +4,23 @@
  *
  * Created on 31. Januar 2011, 15:58
  */
+
 #include "KMPAlgorithm.h"
 #include "FileLoader.h"
 
-void KMPAlgorithm::calculatePrefixFunction(char* pattern, uint shift, uint length) {
+void KMPAlgorithm::calculatePrefixFunction(char* pattern, uint start, uint minLength) {
     prefixFunction[0] = 0;
-    int k = shift;
+    int k = start;
 
-    for (uint q = shift + 1; q < length + shift; q++) {
-        while (k > shift && pattern[k] != pattern[q])
-            k = prefixFunction[k - 1 - shift] + shift;
+    for (uint q = start + 1; q < minLength; q++) {
+        while (k > start && pattern[k] != pattern[q])
+            k = prefixFunction[k - 1 - start] + start;
         if (pattern[k] == pattern[q]) k++;
-        prefixFunction[q - shift] = k - shift;
+        prefixFunction[q - start] = k - start;
     }
 }
 
-void KMPAlgorithm::run(char* t1, char* t2) {
+list<SubString> KMPAlgorithm::run(char* t1, char* t2) {
     char *minString, *maxString;
     uint minLength, maxLength;
     bool t1IsMin = false;
@@ -37,31 +38,34 @@ void KMPAlgorithm::run(char* t1, char* t2) {
     }
     prefixFunction = new uint[minLength];
 
-    uint length;
-    for (length = minLength; length > 0; length--) {
-        bool found = false;
-        for (uint shift = 0; shift <= (minLength - length); shift++) {
-            calculatePrefixFunction(minString, shift, length);
+    list<SubString> currentShifts;
+    uint currentLongestPrefix = 0;
+    for (uint shift = 0; shift < minLength - currentLongestPrefix; shift++) {
+        if (debug) cout << shift << endl;
+        calculatePrefixFunction(minString, shift, minLength);
 
-            int q = 0;
-            for (uint i1 = 0; i1 < maxLength; i1++) {
-                while (q > 0 && minString[q + shift] != maxString[i1])
-                    q = prefixFunction[q - 1];
-                if (minString[q + shift] == maxString[i1]) q++;
-                if (q == length) {
-                    if (!found) {
-                        cout << length;
-                    }
-                    cout << endl << i1 - length + 1 << " " << shift;
-                    q = prefixFunction[q - 1];
-                    found = true;
-                }
+        int q = 0;
+        for (uint textpos = 0; textpos < maxLength; textpos++) {
+            while (q > 0 && minString[q + shift] != maxString[textpos])
+                q = prefixFunction[q - 1];
+            if (minString[q + shift] == maxString[textpos]) q++;
+            if (q > currentLongestPrefix) {
+                currentLongestPrefix = q;
+                currentShifts.clear();
+            }
+            if (q == currentLongestPrefix) {
+                SubString ss;
+                ss.shift1 = textpos - currentLongestPrefix +1;
+                ss.shift2 = shift;
+                currentShifts.push_back(ss);
+            }
+            if (q == minLength - shift) {
+                q = prefixFunction[q - 1];
             }
         }
-        if (found) {
-            return;
-        }
     }
+    cout << currentLongestPrefix;
+    return currentShifts;
 }
 
 vector<SubString> verify(vector<char> s1, vector<char> s2) {
@@ -102,7 +106,12 @@ int main(int argc, char** argv) {
     fileLoader.load(argv[2], t, &algo.t_length);
 
 
-    algo.run(s, t);
+    list <SubString> result= algo.run(s, t);
+    while (!result.empty()){
+        SubString arr = result.front();
+        result.pop_front();
+        cout << endl << arr.shift1 << " " << arr.shift2;
+    }
 
     return 0;
 }

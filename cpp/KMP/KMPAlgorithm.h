@@ -6,7 +6,7 @@
  */
 #include <iostream>
 #include <string>
-#include <vector>
+#include <list>
 #include <cstdlib>
 using namespace std;
 
@@ -18,13 +18,13 @@ typedef unsigned int uint;
 
 class KMPAlgorithm {
 public:
-    void run(char* t1, char* t2);
+    list<SubString> run(char* t1, char* t2);
     uint s_length, t_length;
 
 private:
-    static const bool debug = true;
+    static const bool debug = false;
     uint* prefixFunction;
 
-    void calculatePrefixFunction(char* pattern, uint shift, uint length);
+    void calculatePrefixFunction(char* pattern, uint start, uint minLength);
 };
 
