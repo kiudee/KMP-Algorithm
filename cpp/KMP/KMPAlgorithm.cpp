@@ -40,6 +40,7 @@ void KMPAlgorithm::run(char* t1, char* t2) {
     uint length;
     for (length = minLength; length > 0; length--) {
         bool found = false;
+        if (debug) cout << length << endl;
         for (uint shift = 0; shift <= (minLength - length); shift++) {
             calculatePrefixFunction(minString, shift, length);
 

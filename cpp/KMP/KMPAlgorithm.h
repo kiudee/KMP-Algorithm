@@ -22,7 +22,7 @@ public:
     uint s_length, t_length;
 
 private:
-    static const bool debug = true;
+    static const bool debug = false;
     uint* prefixFunction;
 
     void calculatePrefixFunction(char* pattern, uint shift, uint length);
