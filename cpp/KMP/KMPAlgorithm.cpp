@@ -96,7 +96,6 @@ list<SubString> KMPAlgorithm::verify(char* t1, char* t2) {
             }
         }
     }
-    cout << "ready";
 
     return currentShifts;
 }
