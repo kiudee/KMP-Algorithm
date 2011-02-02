@@ -7,11 +7,11 @@
 #include "KMPAlgorithm.h"
 #include "FileLoader.h"
 
-void KMPAlgorithm::calculatePrefixFunction(vector<char> pattern, int shift, int length) {
+void KMPAlgorithm::calculatePrefixFunction(char* pattern, uint shift, uint length) {
     prefixFunction[0] = 0;
     int k = shift;
 
-    for (int q = shift + 1; q < length + shift; q++) {
+    for (uint q = shift + 1; q < length + shift; q++) {
         while (k > shift && pattern[k] != pattern[q])
             k = prefixFunction[k - 1 - shift] + shift;
         if (pattern[k] == pattern[q]) k++;
@@ -19,54 +19,47 @@ void KMPAlgorithm::calculatePrefixFunction(vector<char> pattern, int shift, int 
     }
 }
 
-vector<SubString> KMPAlgorithm::run(vector<char> t1, vector<char> t2) {
-    vector<SubString> result;
-    vector<char> *minString, *maxString;
+void KMPAlgorithm::run(char* t1, char* t2) {
+    char *minString, *maxString;
+    uint minLength, maxLength;
     bool t1IsMin = false;
-    if (t1.size() < t2.size()) {
+    if (s_length < t_length) {
         t1IsMin = true;
-        minString = &t1;
-        maxString = &t2;
-        prefixFunction = new int[t1.size()];
+        minString = t1;
+        minLength = s_length;
+        maxString = t2;
+        maxLength = t_length;
     } else {
-        maxString = &t1;
-        minString = &t2;
-        prefixFunction = new int[t2.size()];
+        maxString = t1;
+        maxLength = s_length;
+        minString = t2;
+        minLength = t_length;
     }
+    prefixFunction = new uint[minLength];
 
-    int length;
-    for (length = minString->size(); length > 0; length--) {
+    uint length;
+    for (length = minLength; length > 0; length--) {
         bool found = false;
-        for (int shift = 0; shift <= (minString->size() - length); shift++) {
-            calculatePrefixFunction(*minString, shift, length);
+        for (uint shift = 0; shift <= (minLength - length); shift++) {
+            calculatePrefixFunction(minString, shift, length);
 
             int q = 0;
-            for (int i1 = 0; i1 < maxString->size(); i1++) {
-                while (q > 0 && (*minString)[q + shift] != (*maxString)[i1])
+            for (uint i1 = 0; i1 < maxLength; i1++) {
+                while (q > 0 && minString[q + shift] != maxString[i1])
                     q = prefixFunction[q - 1];
-                if ((*minString)[q + shift] == (*maxString)[i1]) q++;
+                if (minString[q + shift] == maxString[i1]) q++;
                 if (q == length) {
-                    if (debug) {
-                        SubString ss;
-                        if (t1IsMin) {
-                            ss.shift1 = i1 - length + 1;
-                            ss.shift2 = shift;
-                        } else {
-                            ss.shift1 = shift;
-                            ss.shift2 = i1 - length + 1;
-                        }
-                        result.push_back(ss);
-                    } else {
-                        cout << endl << i1 - length +1 << " " << shift;
+                    if (!found) {
+                        cout << length;
                     }
+                    cout << endl << i1 - length + 1 << " " << shift;
                     q = prefixFunction[q - 1];
                     found = true;
                 }
             }
         }
         if (found) {
-            maxLength = length;
-            return result;
+            return;
         }
     }
 }
@@ -97,30 +90,19 @@ vector<SubString> verify(vector<char> s1, vector<char> s2) {
     }
 }
 
-
 int main(int argc, char** argv) {
-    if (argc != 3){
-        cout<< "Error: 2 Arguments expected!";
+    if (argc != 3) {
+        cout << "Error: 2 Arguments expected!";
         exit(1);
     }
     FileLoader fileLoader;
-    vector<char> s = fileLoader.load(argv[1]);
-    vector<char> t = fileLoader.load(argv[2]);
-    
+    char *s, *t;
     KMPAlgorithm algo;
-    vector<SubString> result = algo.run(s, t);
-    cout << algo.getMaxLength();
-    for (int i = 0; i < result.size(); i++) {
-        SubString ss = result[i];
-        cout << endl << ss.shift1 << " " << ss.shift2;
-    }
-    cout << endl;
+    fileLoader.load(argv[1], s, &algo.s_length);
+    fileLoader.load(argv[2], t, &algo.t_length);
 
-//    vector<SubString> solution = verify(s, t);
-//    for (int i = 0; i < solution.size(); i++) {
-//        SubString ss = solution[i];
-//        cout << endl << ss.shift1 << " " << ss.shift2;
-//    }
+
+    algo.run(s, t);
 
     return 0;
 }

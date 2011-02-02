@@ -14,18 +14,17 @@ struct SubString {
     int shift1;
     int shift2;
 };
+typedef unsigned int uint;
 
 class KMPAlgorithm {
 public:
-    vector<SubString> run(vector<char> t1, vector<char> t2);
+    void run(char* t1, char* t2);
+    uint s_length, t_length;
 
-    int getMaxLength() const {
-        return maxLength;
-    }
 private:
     static const bool debug = true;
-    int* prefixFunction;
-    int maxLength;
-    void calculatePrefixFunction(vector<char> pattern, int shift, int length);
+    uint* prefixFunction;
+
+    void calculatePrefixFunction(char* pattern, uint shift, uint length);
 };
 

@@ -1,15 +1,18 @@
 #include "FileLoader.h"
 
-vector<char> FileLoader::load(char path[]){
+void FileLoader::load(char path[], char* &string, uint* length) {
     ifstream inFile;
     inFile.open(path);
-    if (inFile.fail()){
+    if (inFile.fail()) {
         cerr << "unable to open file " << path << endl;
         exit(1);
     }
-    vector<char> result(6500);
     char ch;
-    while (inFile.get(ch)) result.push_back(ch);
-
-    return result;
+    *length = 0;
+    inFile.seekg(0, ios::end);
+    *length = inFile.tellg();
+    string = new char[*length];
+    inFile.seekg(0, ios::beg);
+    inFile.read(string, *length);
+    inFile.close();
 }

@@ -13,10 +13,11 @@
 #include <iostream>
 #include <cstdlib>
 using namespace std;
+typedef unsigned int uint;
 
 class FileLoader {
 public:
-    vector<char> load(char path[]);
+    void load(char path[],char* &string, uint* length);
 };
 
 #endif	/* FILELOADER_H */
